@@ -1,23 +1,21 @@
-import itertools
-from enum import auto, Enum
-
 from PIL import Image
-from minesweeper.models import Point
+
+from minesweeper.config import COLORS
+from minesweeper.models import Point, Cell
 
 
-class Cell(Enum):
-    EMPTY = 0
-    BLUE = auto()
-    GREEN = auto()
-    RED = auto()
-
-COLORS = {(0, 0, 255): Cell.BLUE, (0, 123, 0): Cell.GREEN, (255, 0, 0): Cell.RED}
-
-
-def crop(image: Image, start: Point, end: Point):
+def crop(image: Image, start: Point, end: Point, diff=0) -> Image:
+    start = start - Point(diff)
+    end = end + Point(diff)
     return image.crop((*start, *end))
 
-def get_color(image: Image):
+
+def identify_cell(image: Image) -> Cell:
     colors = image.getcolors()
     colors.sort(key=lambda x: x[0], reverse=True)
     return ([COLORS[i[1]] for i in colors[:5] if i[1] in COLORS] or [Cell.EMPTY])[0]
+
+
+def get_cell_point(board_point: Point, square_size, start=None) -> Point:
+    return Point(square_size * (board_point.x + 0.5) + start.x or 0,
+                 square_size * (board_point.y + 0.5) + start.y or 0)
