@@ -9,5 +9,8 @@ def switch_window():
     pyautogui.keyUp("tab")
     pyautogui.keyUp("alt")
 
+def screenshot():
+    return pyautogui.screenshot()
+
 def mouse_click(point: Point):
     pyautogui.moveTo(*point)
